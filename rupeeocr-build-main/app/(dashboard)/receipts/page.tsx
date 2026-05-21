@@ -41,7 +41,7 @@ export default function ReceiptsPage() {
     if (search) params.set('search', search);
     if (selectedCategory) params.set('category', selectedCategory);
 
-    fetch(`/api/receipts?${params}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/receipts?${params}`, {
       headers: getAuthHeaders(session),
     })
       .then(async (response) => {
@@ -87,7 +87,7 @@ export default function ReceiptsPage() {
 
     setExporting(true);
     try {
-      const response = await fetch('/api/receipts/export.csv', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/receipts/export.csv`, {
         headers: getAuthHeaders(session),
       });
       if (!response.ok) {

@@ -47,7 +47,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/auth/${isLogin ? 'login' : 'signup'}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/${isLogin ? 'login' : 'signup'}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

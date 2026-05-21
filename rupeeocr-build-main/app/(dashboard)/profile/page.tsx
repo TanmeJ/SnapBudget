@@ -190,7 +190,7 @@ export default function ProfilePage() {
 
     setIsSaving(true);
     try {
-      const response = await fetch('/api/auth/me', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -230,7 +230,7 @@ export default function ProfilePage() {
 
     setIsSaving(true);
     try {
-      const response = await fetch('/api/auth/change-password', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -300,7 +300,7 @@ export default function ProfilePage() {
 
     setIsExporting(true);
     try {
-      const response = await fetch('/api/receipts', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/receipts`, {
         headers: getAuthHeaders(session),
       });
       if (!response.ok) {

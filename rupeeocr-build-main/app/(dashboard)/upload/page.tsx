@@ -76,7 +76,7 @@ export default function UploadPage() {
     const formData = new FormData();
     formData.append('file', uploadFile.file);
 
-    const response = await fetch('/api/scan', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scan`, {
       method: 'POST',
       headers: getAuthHeaders(session),
       body: formData,

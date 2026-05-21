@@ -31,7 +31,7 @@ export default function ReceiptDetailPage() {
       return;
     }
 
-    fetch(`/api/receipts/${id}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/receipts/${id}`, {
       headers: getAuthHeaders(session),
     })
       .then((r) => {
@@ -66,7 +66,7 @@ export default function ReceiptDetailPage() {
 
     let active = true;
     let objectUrl: string | null = null;
-    fetch(`/api/receipts/${id}/file`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/receipts/${id}/file`, {
       headers: getAuthHeaders(session),
     })
       .then((response) => {
@@ -99,7 +99,7 @@ export default function ReceiptDetailPage() {
         throw new Error('Authentication required');
       }
 
-      const res = await fetch(`/api/receipts/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/receipts/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ export default function ReceiptDetailPage() {
       return;
     }
 
-    await fetch(`/api/receipts/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/receipts/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(session),
     });

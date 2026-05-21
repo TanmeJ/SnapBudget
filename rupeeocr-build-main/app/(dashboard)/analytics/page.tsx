@@ -111,7 +111,7 @@ export default function AnalyticsPage() {
       return;
     }
 
-    fetch('/api/dashboard', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard`, {
       headers: getAuthHeaders(session),
     })
       .then(async (response) => {
