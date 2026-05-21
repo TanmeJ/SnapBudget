@@ -1,5 +1,4 @@
 from contextlib import asynccontextmanager
-import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,20 +28,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-allowed_origins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://rupeeocr.vercel.app",
-]
-
-frontend_url = os.getenv("FRONTEND_URL")
-if frontend_url:
-    allowed_origins.append(frontend_url.rstrip("/"))
-
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=[
+        "https://snap-budget-emlz.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
