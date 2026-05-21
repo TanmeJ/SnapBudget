@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Lumina Ledger — The Precision Ledger ===== */
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f7f9fc;
+    color: #191c1e;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, .font-headline {
+    font-family: 'Manrope', sans-serif;
+  }
+
+  /* The Rupee Symbol Rule: lighter weight than the number */
+  .rupee-symbol {
+    @apply font-light text-on-surface-variant;
+  }
+
+  html[data-density='compact'] body {
+    font-size: 15px;
+  }
+
+  html[data-motion='reduced'] *,
+  html[data-motion='reduced'] *::before,
+  html[data-motion='reduced'] *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  html[data-appearance='midnight'] body {
+    background-color: #0f172a;
+    color: #e5edf7;
+  }
+
+  html[data-appearance='midnight'] .glass-header {
+    background: rgba(15, 23, 42, 0.84);
+  }
+
+  html[data-appearance='midnight'] .bg-surface {
+    background-color: #0f172a !important;
+  }
+
+  html[data-appearance='midnight'] .bg-surface-container-lowest {
+    background-color: #172033 !important;
+  }
+
+  html[data-appearance='midnight'] .bg-surface-container-low {
+    background-color: #1d2940 !important;
+  }
+
+  html[data-appearance='midnight'] .bg-surface-container,
+  html[data-appearance='midnight'] .bg-surface-container-high,
+  html[data-appearance='midnight'] .bg-surface-container-highest {
+    background-color: #24314a !important;
+  }
+
+  html[data-appearance='midnight'] .text-on-surface {
+    color: #e5edf7 !important;
+  }
+
+  html[data-appearance='midnight'] .text-on-surface-variant,
+  html[data-appearance='midnight'] .text-outline {
+    color: #9aa7bf !important;
+  }
+
+  html[data-appearance='midnight'] .ghost-border {
+    border-color: rgba(154, 167, 191, 0.16) !important;
+  }
+
+  html[data-appearance='midnight'] .border-outline-variant\/10,
+  html[data-appearance='midnight'] .border-outline-variant\/20 {
+    border-color: rgba(154, 167, 191, 0.16) !important;
+  }
+}
+
+@layer components {
+  /* Primary gradient CTA (jewel depth, 135deg) */
+  .bg-primary-gradient {
+    background: linear-gradient(135deg, #001567 0%, #0a2896 100%);
+  }
+
+  /* Glass header: surface at 80% opacity + blur */
+  .glass-header {
+    background: rgba(247, 249, 252, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Ghost border: outline-variant at 15% opacity */
+  .ghost-border {
+    border: 1px solid rgba(200, 197, 207, 0.2);
+  }
+
+  .ocr-glass {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Material Symbols config */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+
+  .fill-icon {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+
+  /* Safe area for mobile bottom nav */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Tabular numbers for financial data */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  /* Fade-in animation */
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
