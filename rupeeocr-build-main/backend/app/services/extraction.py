@@ -89,39 +89,47 @@ GST_AMOUNT_PATTERNS = {
 
 # 6-tier Amount Extraction (PRD Section 7.4.4)
 # Strategy: more specific patterns first, take LAST match (bottom of receipt = final total)
+
+# Shared number sub-pattern: supports comma-grouped AND plain large numbers, 1-2 decimal places
+# Shared number sub-pattern: plain large numbers FIRST (greedy), then comma-grouped
+_NUM = r'(\d{4,}(?:\.\d{1,2})?|\d{1,3}(?:,\d{2,3})*(?:\.\d{1,2})?)'
+
+
 AMOUNT_PATTERNS = [
-    # Tier 0: INVOICE TOTAL / GRAND TOTAL (most specific, highest priority)
+    # Tier 0a: "Invoice Value : INR.XXXXX" — Croma/formal invoice style
+    # e.g. "Invoice Value : INR.56794.3" or "Invoice Value: ₹56,794.30"
+    re.compile(
+        r'(?:INVOICE\s*VALUE|INVOICE\s*AMOUNT)\s*[:\-]?\s*'
+        r'(?:Rs\.?|₹|¥|INR)?\.?\s*' + _NUM,
+        re.IGNORECASE
+    ),
+    # Tier 0b: INVOICE TOTAL / GRAND TOTAL (most specific, highest priority)
     re.compile(
         r'(?:INVOICE|GRAND)\s*TOTAL\s*[:\-]?\s*'
-        r'(?:Rs\.?|₹|¥|INR)?\s*'
-        r'(\d{1,3}(?:,\d{2,3})*(?:\.\d{1,2})?)',
+        r'(?:Rs\.?|₹|¥|INR)?\.?\s*' + _NUM,
         re.IGNORECASE
     ),
     # Tier 1: TOTAL (but NOT subtotal) — use negative lookbehind
     re.compile(
         r'(?<!SUB)TOTAL\s*(?:AMOUNT|AMT|DUE|PAYABLE)?\s*[:\-]?\s*'
-        r'(?:Rs\.?|₹|¥|INR)?\s*'
-        r'(\d{1,3}(?:,\d{2,3})*(?:\.\d{1,2})?)',
+        r'(?:Rs\.?|₹|¥|INR)?\.?\s*' + _NUM,
         re.IGNORECASE
     ),
     # Tier 2: Net/Final amount
     re.compile(
         r'(?:NET|FINAL|BILL)\s*(?:AMOUNT|AMT|TOTAL)?\s*[:\-]?\s*'
-        r'(?:Rs\.?|₹|¥|INR)?\s*'
-        r'(\d{1,3}(?:,\d{2,3})*(?:\.\d{1,2})?)',
+        r'(?:Rs\.?|₹|¥|INR)?\.?\s*' + _NUM,
         re.IGNORECASE
     ),
-    # Tier 3: Amount with currency symbol (₹, ¥, Rs.)
+    # Tier 3: Amount with currency symbol (₹, ¥, Rs., INR) — allow optional dot after symbol
     re.compile(
-        r'(?:Rs\.?|₹|¥|INR)\s*[:\-]?\s*'
-        r'(\d{1,3}(?:,\d{2,3})*(?:\.\d{1,2})?)',
+        r'(?:Rs\.?|₹|¥|INR)\.?\s*[:\-]?\s*' + _NUM,
         re.IGNORECASE
     ),
     # Tier 4: "Paid" amount
     re.compile(
         r'(?:PAID|PAYMENT|RECEIVED)\s*[:\-]?\s*'
-        r'(?:Rs\.?|₹|¥|INR)?\s*'
-        r'(\d{1,3}(?:,\d{2,3})*(?:\.\d{1,2})?)',
+        r'(?:Rs\.?|₹|¥|INR)?\.?\s*' + _NUM,
         re.IGNORECASE
     ),
     # Tier 5: Standalone large number (likely total)
@@ -251,6 +259,8 @@ class IndianTextNormalizer:
         )
         
         # Normalize currency symbols
+        # Handle "INR." (dot immediately after INR) — e.g. Croma: "Invoice Value : INR.56794.3"
+        text = re.sub(r'\bINR\.\s*', '₹', text, flags=re.IGNORECASE)
         text = re.sub(r'\bRs\.?\s*', '₹', text, flags=re.IGNORECASE)
         text = re.sub(r'\bINR\s*', '₹', text, flags=re.IGNORECASE)
         text = re.sub(r'\bRupees?\s*', '₹', text, flags=re.IGNORECASE)
@@ -439,8 +449,8 @@ class IndianRegexEngine:
                         continue
                 
                 if amounts:
-                    # Top tiers (0-1): take LAST match (final total at bottom)
-                    if tier_idx <= 1:
+                    # Top tiers (0a, 0b, 1 = indices 0,1,2): take LAST match (final total at bottom)
+                    if tier_idx <= 2:
                         return amounts[-1]
                     # Lower tiers: take largest
                     return max(amounts)
@@ -522,7 +532,7 @@ class IndianRegexEngine:
             # Skip lines that are clearly not merchant names
             if re.match(r'^(GSTIN|GST|TAX|INVOICE|RECEIPT|BILL|DATE|TIME)', line, re.IGNORECASE):
                 continue
-            if re.match(r'^[\d\s,.\-/]+$', line):  # All numbers/dates
+            if re.match(r'^[\d\s,./\-/]+$', line):  # All numbers/dates
                 continue
             if len(line) < 3:
                 continue

@@ -9,8 +9,24 @@
     font-family: 'Inter', sans-serif;
     background-color: #f7f9fc;
     color: #191c1e;
+    cursor: default;
+    user-select: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  button,
+  a,
+  [role='button'] {
+    cursor: pointer;
+  }
+
+  input,
+  textarea,
+  [contenteditable='true'],
+  [contenteditable='plaintext-only'] {
+    cursor: text;
+    user-select: text;
   }
 
   h1, h2, h3, .font-headline {
